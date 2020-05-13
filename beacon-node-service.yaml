@@ -13,10 +13,12 @@ spec:
   - name: "4000"
     port: 4000
     targetPort: 4000
+    nodePort: 30500
   - name: "13000"
     port: 13000
     targetPort: 13000
   selector:
     io.kompose.service: beacon-node
+  type: NodePort
 status:
   loadBalancer: {}
