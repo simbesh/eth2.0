@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: beacon-node
+  name: beacon-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: beacon-node
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: beacon-node
+    spec:
+      containers:
+      - args:
+        - --datadir=/data
+        image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+        imagePullPolicy: ""
+        name: beacon-node
+        ports:
+        - containerPort: 4000
+        - containerPort: 13000
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: beacon-data
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: beacon-data
+        persistentVolumeClaim:
+          claimName: beacon-data
+status: {}

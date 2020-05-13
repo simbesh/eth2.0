@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: validator
+  name: validator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: validator
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: validator
+    spec:
+      containers:
+      - args:
+        - --beacon-rpc-provider=127.0.0.1:4000
+        - ' --keymanager=keystore'
+        - ' --keymanageropts=/data/keystore.json'
+        image: gcr.io/prysmaticlabs/prysm/validator:latest
+        imagePullPolicy: ""
+        name: validator
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: validator-secret
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: validator-secret
+        secret:
+          secretName: validator-secret
+status: {}
