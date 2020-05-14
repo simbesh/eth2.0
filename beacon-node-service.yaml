@@ -17,6 +17,9 @@ spec:
   - name: "13000"
     port: 13000
     targetPort: 13000
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
   selector:
     io.kompose.service: beacon-node
   type: NodePort

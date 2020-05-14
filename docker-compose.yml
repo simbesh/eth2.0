@@ -10,6 +10,7 @@ services:
     ports:
       - "4000:4000"
       - "13000:13000"
+      - "8080:8080"
     command: --datadir=/data
 
   validator:
@@ -23,6 +24,11 @@ services:
     command: --beacon-rpc-provider=127.0.0.1:4000 \
              --keymanager=keystore \
              --keymanageropts=/data/keystore.json
+  
+  eth2stat:
+    image: alethio/eth2stats-client:latest
+    restart: always
+    network_mode: "host"
 
 volumes:
   beacon-data:

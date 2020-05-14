@@ -32,6 +32,7 @@ spec:
         name: beacon-node
         ports:
         - containerPort: 4000
+        - containerPort: 8080
         - containerPort: 13000
         resources: {}
         volumeMounts:
