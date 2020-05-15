@@ -15,7 +15,15 @@ microk8s kubectl apply -fbeacon-node-service.yaml -fbeacon-data-persistentvolume
 microk8s kubectl apply -f validator-secret.yaml -f validator-deployment.yaml
 ```
 
+## Eth2Stat
+[Eth2Stat](https://eth2stats.io/) can be used to monitor the node.
+
+```
+microk8s kubectl apply -f eth2stat-data-persistentvolumeclaim.yaml -f eth2stat-deployment.yaml
+```
+
 ## Secret
+My secret dosn't work, don't know why at this time.
 
 ### Deploy
 ```

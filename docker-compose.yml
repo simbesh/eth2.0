@@ -21,7 +21,7 @@ services:
       - beacon-node
     volumes:
       - validator-data:/data
-    command: --beacon-rpc-provider=127.0.0.1:4000 \
+    command: --beacon-rpc-provider=beacon-node:4000 \
              --keymanager=keystore \
              --keymanageropts=/data/keystore.json
   
@@ -29,7 +29,19 @@ services:
     image: alethio/eth2stats-client:latest
     restart: always
     network_mode: "host"
+    depends_on:
+      - beacon-node
+    volumes:
+      - eth2stat-data:/data
+    command: --eth2stats.node-name="owerdone" \
+             --data.folder="/data" \
+             --eth2stats.addr="grpc.topaz.eth2stats.io:443" \
+             --eth2stats.tls=true \
+             --beacon.type="prysm" \
+             --beacon.addr="beacon-node:4000" \
+             --beacon.metrics-addr="http://beacon-node:8080/metrics"
 
 volumes:
   beacon-data:
   validator-data:
+  eth2stat-data:
