@@ -12,7 +12,7 @@ microk8s kubectl apply -fbeacon-node-service.yaml -fbeacon-data-persistentvolume
 ## Validator
 
 ```
-microk8s kubectl apply -f validator-secret.yaml -f validator-deployment.yaml
+microk8s kubectl apply -f validator-secret.yaml -f validator-data-persistentvolumeclaim.yaml.yaml -f validator-deployment.yaml
 ```
 
 ## Eth2Stat

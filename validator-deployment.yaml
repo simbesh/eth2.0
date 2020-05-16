@@ -27,19 +27,26 @@ spec:
       containers:
       - args:
         - --beacon-rpc-provider=beacon-node:4000
-        - ' --keymanager=keystore'
-        - ' --keymanageropts=/data/keystore.json'
+        - --keymanager=keystore
+        - --keymanageropts=/secret/keystore.json
+        - --databasePath=/data
         image: gcr.io/prysmaticlabs/prysm/validator:latest
         imagePullPolicy: ""
         name: validator
         resources: {}
         volumeMounts:
-        - mountPath: /data
+        - mountPath: /secret
           name: validator-secret
+        volumeMounts:
+        - mountPath: /data
+          name: validator-data
       restartPolicy: Always
       serviceAccountName: ""
       volumes:
       - name: validator-secret
         secret:
           secretName: validator-secret
+      - name: validator-data
+        persistentVolumeClaim:
+          claimName: validator-data
 status: {}
