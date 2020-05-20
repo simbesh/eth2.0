@@ -27,6 +27,7 @@ spec:
       containers:
       - args:
         - --datadir=/data
+        - --p2p-host-ip=$(curl -s v4.ident.me)
         image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
         imagePullPolicy: ""
         name: beacon-node
@@ -34,6 +35,8 @@ spec:
         - containerPort: 4000
         - containerPort: 8080
         - containerPort: 13000
+        - containerPort: 12000
+          protocol: UDP
         resources: {}
         volumeMounts:
         - mountPath: /data

@@ -17,6 +17,12 @@ spec:
   - name: "13000"
     port: 13000
     targetPort: 13000
+    nodePort: 30600
+  - name: "12000"
+    port: 12000
+    targetPort: 12000
+    nodePort: 30700
+    protocol: UDP
   - name: "8080"
     port: 8080
     targetPort: 8080
