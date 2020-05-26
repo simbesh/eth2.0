@@ -27,7 +27,7 @@ spec:
       containers:
       - args:
         - --datadir=/data
-        - --p2p-host-ip=$(curl -s v4.ident.me)
+        - --p2p-host-ip=81.235.227.163
         image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
         imagePullPolicy: ""
         name: beacon-node
