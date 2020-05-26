@@ -15,6 +15,12 @@ microk8s kubectl apply -fbeacon-node-service.yaml -fbeacon-data-persistentvolume
 microk8s kubectl apply -f validator-secret.yaml -f validator-data-persistentvolumeclaim.yaml.yaml -f validator-deployment.yaml
 ```
 
+## Slasher
+
+```
+microk8s kubectl apply -f slasher-data-persistentvolumeclaim.yaml -f slasher-deployment.yaml
+```
+
 ## Eth2Stat
 [Eth2Stat](https://eth2stats.io/) can be used to monitor the node.
 
