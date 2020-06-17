@@ -1,34 +1,32 @@
 version: "3"
 services:
-
   beacon-node:
     image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
     restart: always
-    network_mode: "host"
     volumes:
       - beacon-data:/data
     ports:
       - "4000:4000"
       - "13000:13000"
-      - "8080:8080"
     command: --datadir=/data
 
   validator:
     image: gcr.io/prysmaticlabs/prysm/validator:latest
     restart: always
-    network_mode: "host"
     depends_on:
       - beacon-node
     volumes:
+      - /home/owodunni/.prysm/validator:/keys:ro
       - validator-data:/data
-    command: --beacon-rpc-provider=beacon-node:4000 \
-             --keymanager=keystore \
-             --keymanageropts=/data/keystore.json
+    command:
+      - --beacon-rpc-provider=beacon-node:4000
+      - --keymanager=keystore
+      - --keymanageropts=/keys/keystore.json
+      - --datadir=/data
   
   eth2stat:
     image: alethio/eth2stats-client:latest
     restart: always
-    network_mode: "host"
     depends_on:
       - beacon-node
     volumes:
@@ -43,5 +41,5 @@ services:
 
 volumes:
   beacon-data:
-  validator-data:
   eth2stat-data:
+  validator-data:
