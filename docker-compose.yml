@@ -6,8 +6,8 @@ services:
     volumes:
       - beacon-data:/data
     ports:
-      - "4000:4000"
-      - "13000:13000"
+      - 12000:12000
+      - 13000:13000
     command: --datadir=/data
 
   validator:
@@ -22,6 +22,17 @@ services:
       - --beacon-rpc-provider=beacon-node:4000
       - --keymanager=keystore
       - --keymanageropts=/keys/keystore.json
+      - --datadir=/data
+
+  slasher:
+    image: gcr.io/prysmaticlabs/prysm/slasher:latest
+    restart: always
+    depends_on:
+            - beacon-node
+    volumes:
+      - slasher-data:/data
+    command:
+      - --beacon-rpc-provider=beacon-node:4000
       - --datadir=/data
   
   eth2stat:
@@ -43,3 +54,4 @@ volumes:
   beacon-data:
   eth2stat-data:
   validator-data:
+  slasher-data:
