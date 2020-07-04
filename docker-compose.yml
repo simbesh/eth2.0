@@ -49,19 +49,6 @@ services:
              --beacon.type="prysm" \
              --beacon.addr="beacon-node:4000" \
              --beacon.metrics-addr="http://beacon-node:8080/metrics"
-  
-  eth-node:
-    image: parity/parity:stable
-    restart: always
-    volumes:
-      - eth-data:/data
-    command:
-      - --chain=kovan
-      - --base-path="/data"
-      - --ws-interface=all
-      - --ws-origins="all"
-    ports:
-      - 8546:8546
 
 volumes:
   beacon-data:
