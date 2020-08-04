@@ -11,8 +11,8 @@ services:
       - --goerli
       - --http
       - --http.addr=0.0.0.0
-      - --http.vhosts='*'
-      - --http.corsdomain="*"
+      - --http.vhosts=*
+      - --http.corsdomain=*
       - --allow-insecure-unlock
       - --metrics
       - --metrics.expensive
@@ -37,7 +37,6 @@ services:
   
   validator:
     image: gcr.io/prysmaticlabs/prysm/validator:latest
-    restart: always
     depends_on:
       - beacon-node
     volumes:
@@ -53,7 +52,6 @@ services:
 
   slasher:
     image: gcr.io/prysmaticlabs/prysm/slasher:latest
-    restart: always
     depends_on:
             - beacon-node
     volumes:
@@ -66,7 +64,6 @@ services:
 
   eth2stat:
     image: alethio/eth2stats-client:latest
-    restart: always
     depends_on:
       - beacon-node
     volumes:
