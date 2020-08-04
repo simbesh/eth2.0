@@ -1,58 +1,27 @@
 version: "3"
 services:
-  beacon-node:
-    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
-    restart: always
-    volumes:
-      - beacon-data:/data
+  eth:
+    image: ethereum/client-go:stable
+    volumes: 
+      - eth-data:/data
     ports:
-      - 12000:12000/udp
-      - 13000:13000
-    command: --datadir=/data
-
-  validator:
-    image: gcr.io/prysmaticlabs/prysm/validator:latest
-    restart: always
-    depends_on:
-      - beacon-node
-    volumes:
-      - /home/owodunni/.prysm/validator:/keys:ro
-      - validator-data:/data
+      - 30303:30303/tcp
+      - 30304:30304/udp
+      - 6060:6060
     command:
-      - --beacon-rpc-provider=beacon-node:4000
-      - --keymanager=keystore
-      - --keymanageropts=/keys/keystore.json
+      - --goerli
+      - --rpc
+      - --metrics
+      - --metrics.expensive
+      - --pprof
+      - --pprof.addr=0.0.0.0
       - --datadir=/data
-
-  slasher:
-    image: gcr.io/prysmaticlabs/prysm/slasher:latest
-    restart: always
-    depends_on:
-            - beacon-node
-    volumes:
-      - slasher-data:/data
-    command:
-      - --beacon-rpc-provider=beacon-node:4000
-      - --datadir=/data
-  
-  eth2stat:
-    image: alethio/eth2stats-client:latest
-    restart: always
-    depends_on:
-      - beacon-node
-    volumes:
-      - eth2stat-data:/data
-    command: --eth2stats.node-name="owerdone" \
-             --data.folder="/data" \
-             --eth2stats.addr="grpc.topaz.eth2stats.io:443" \
-             --eth2stats.tls=true \
-             --beacon.type="prysm" \
-             --beacon.addr="beacon-node:4000" \
-             --beacon.metrics-addr="http://beacon-node:8080/metrics"
+    networks:
+      - core
 
 volumes:
-  beacon-data:
-  eth2stat-data:
-  validator-data:
-  slasher-data:
   eth-data:
+
+networks:
+  core:
+    external: true
