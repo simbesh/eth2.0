@@ -1,0 +1,8 @@
+datadir: /data
+
+# disable scan of local network
+p2p-denylist: ["10.0.0.0/8","172.16.0.0/12","192.168.0.0/16","100.64.0.0/10","169.254.0.0/16"]
+
+# I do not manage to resolve eth1 node with hostname
+#http-web3provider: http://10.0.4.64:8545
+http-web3provider: http://eth-node:8545
