@@ -7,10 +7,13 @@ services:
     ports:
       - 30303:30303/tcp
       - 30304:30304/udp
-      - 6060:6060
     command:
       - --goerli
-      - --rpc
+      - --http
+      - --http.addr=0.0.0.0
+      - --http.vhosts='*'
+      - --http.corsdomain="*"
+      - --allow-insecure-unlock
       - --metrics
       - --metrics.expensive
       - --pprof
@@ -19,8 +22,71 @@ services:
     networks:
       - core
 
+  beacon-node:
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+    volumes:
+      - beacon-data:/data
+      - ./beacon/beacon.yaml:/config/beacon.yaml:ro
+    ports:
+      - 12000:12000/udp
+      - 13000:13000
+    command: 
+      --config-file=/config/beacon.yaml
+    networks:
+      - core
+  
+  validator:
+    image: gcr.io/prysmaticlabs/prysm/validator:latest
+    restart: always
+    depends_on:
+      - beacon-node
+    volumes:
+      - /home/owodunni/.prysm/validator:/keys:ro
+      - validator-data:/data
+    command:
+      - --beacon-rpc-provider=beacon-node:4000
+      - --keymanager=keystore
+      - --keymanageropts=/keys/keystore.json
+      - --datadir=/data
+    networks:
+      - core
+
+  slasher:
+    image: gcr.io/prysmaticlabs/prysm/slasher:latest
+    restart: always
+    depends_on:
+            - beacon-node
+    volumes:
+      - slasher-data:/data
+    command:
+      - --beacon-rpc-provider=beacon-node:4000
+      - --datadir=/data
+    networks:
+      - core
+
+  eth2stat:
+    image: alethio/eth2stats-client:latest
+    restart: always
+    depends_on:
+      - beacon-node
+    volumes:
+      - eth2stat-data:/data
+    command: --eth2stats.node-name="owerdone" \
+              --data.folder="/data" \
+              --eth2stats.addr="grpc.topaz.eth2stats.io:443" \
+              --eth2stats.tls=true \
+              --beacon.type="prysm" \
+              --beacon.addr="beacon-node:4000" \
+              --beacon.metrics-addr="http://beacon-node:8080/metrics"
+    networks:
+      - core
+
 volumes:
   eth-data:
+  beacon-data:
+  eth2stat-data:
+  validator-data:
+  slasher-data:
 
 networks:
   core:
