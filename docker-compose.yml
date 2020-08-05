@@ -40,12 +40,13 @@ services:
     depends_on:
       - beacon-node
     volumes:
-      - /home/owodunni/.prysm/validator:/keys:ro
+      - /home/owodunni/.prysm/validator:/wallet:ro
+      - /home/owodunni/.prysm/password:/password:ro
       - validator-data:/data
     command:
       - --beacon-rpc-provider=beacon-node:4000
-      - --keymanager=keystore
-      - --keymanageropts=/keys/keystore.json
+      - --wallet-dir=/wallet
+      - --wallet-password-file=/password/validator-pw.txt
       - --datadir=/data
     networks:
       - core
@@ -68,13 +69,16 @@ services:
       - beacon-node
     volumes:
       - eth2stat-data:/data
-    command: --eth2stats.node-name="owerdone" \
-              --data.folder="/data" \
-              --eth2stats.addr="grpc.topaz.eth2stats.io:443" \
-              --eth2stats.tls=true \
-              --beacon.type="prysm" \
-              --beacon.addr="beacon-node:4000" \
-              --beacon.metrics-addr="http://beacon-node:8080/metrics"
+      - ./eth2stat/eth2stat.yaml:/config/eth2stat.yaml:ro
+    command:
+      - run
+      - --eth2stats.node-name=Owerdone
+      - --data.folder=/data
+      - --eth2stats.addr=grpc.medalla.eth2stats.io:443
+      - --eth2stats.tls=true
+      - --beacon.type=prysm
+      - --beacon.addr=beacon-node:4000
+      - --beacon.metrics-addr=http://beacon-node:8080/metrics
     networks:
       - core
 
