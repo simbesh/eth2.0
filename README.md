@@ -1,5 +1,5 @@
 # Readme
-This is a repository for deploying a beacon node and a validator using kubernetes and prysm
+This is a repository for deploying a beacon node and a validator using docker-swarm and prysm
 
 # Setup
 
