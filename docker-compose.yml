@@ -40,8 +40,8 @@ services:
     depends_on:
       - beacon-node
     volumes:
-      - /home/owodunni/.prysm/validator:/wallet:ro
-      - /home/owodunni/.prysm/password:/password:ro
+      - /home/simbesh/.prysm/validator:/wallet:ro
+      - /home/simbesh/.prysm/password:/password:ro
       - validator-data:/data
     command:
       - --beacon-rpc-provider=beacon-node:4000
@@ -72,7 +72,7 @@ services:
       - ./eth2stat/eth2stat.yaml:/config/eth2stat.yaml:ro
     command:
       - run
-      - --eth2stats.node-name=Owerdone
+      - --eth2stats.node-name=Bech
       - --data.folder=/data
       - --eth2stats.addr=grpc.medalla.eth2stats.io:443
       - --eth2stats.tls=true
