@@ -2,11 +2,12 @@ version: "3"
 services:
   eth-node:
     image: ethereum/client-go:stable
-    volumes: 
+    volumes:
       - eth-data:/data
     ports:
       - 30303:30303/tcp
       - 30304:30304/udp
+      - 8545:8545
     command:
       - --goerli
       - --http
@@ -30,11 +31,15 @@ services:
     ports:
       - 12000:12000/udp
       - 13000:13000
-    command: 
-      --config-file=/config/beacon.yaml
+      - 4000:4000
+      - 8080:8080
+    command:
+      - --config-file=/config/beacon.yaml
+      - --dev
+      - --block-batch-limit=512
     networks:
       - core
-  
+
   validator:
     image: gcr.io/prysmaticlabs/prysm/validator:latest
     depends_on:
@@ -43,7 +48,10 @@ services:
       - /home/simbesh/.prysm/validator:/wallet:ro
       - /home/simbesh/.prysm/password:/password:ro
       - validator-data:/data
+    ports:
+      - 8081:8081
     command:
+      - --monitoring-host=0.0.0.0
       - --beacon-rpc-provider=beacon-node:4000
       - --wallet-dir=/wallet
       - --wallet-password-file=/password/validator-pw.txt
@@ -54,10 +62,13 @@ services:
   slasher:
     image: gcr.io/prysmaticlabs/prysm/slasher:latest
     depends_on:
-            - beacon-node
+      - beacon-node
     volumes:
       - slasher-data:/data
+    ports:
+      - 8082:8082
     command:
+      - --monitoring-host=0.0.0.0
       - --beacon-rpc-provider=beacon-node:4000
       - --datadir=/data
     networks:
@@ -69,10 +80,9 @@ services:
       - beacon-node
     volumes:
       - eth2stat-data:/data
-      - ./eth2stat/eth2stat.yaml:/config/eth2stat.yaml:ro
     command:
       - run
-      - --eth2stats.node-name=Bech
+      - --eth2stats.node-name=__Bech__Prysm
       - --data.folder=/data
       - --eth2stats.addr=grpc.medalla.eth2stats.io:443
       - --eth2stats.tls=true
