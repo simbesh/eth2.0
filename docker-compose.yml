@@ -9,7 +9,6 @@ services:
       - 30304:30304/udp
       - 8545:8545
     command:
-      - --goerli
       - --http
       - --http.addr=0.0.0.0
       - --http.vhosts=*
@@ -26,6 +25,7 @@ services:
   beacon-node:
     image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
     volumes:
+      - eth-data:/eth1
       - beacon-data:/data
       - ./beacon/beacon.yaml:/config/beacon.yaml:ro
     ports:
@@ -35,8 +35,9 @@ services:
       - 8080:8080
     command:
       - --config-file=/config/beacon.yaml
-      - --dev
-      - --block-batch-limit=512
+      - --http-web3provider=/eth1/geth.ipc
+      - --datadir=/data
+      - --accept-terms-of-use
     networks:
       - core
 
@@ -56,6 +57,8 @@ services:
       - --wallet-dir=/wallet
       - --wallet-password-file=/password/validator-pw.txt
       - --datadir=/data
+      - --accept-terms-of-use
+#      - --web
     networks:
       - core
 
@@ -71,26 +74,27 @@ services:
       - --monitoring-host=0.0.0.0
       - --beacon-rpc-provider=beacon-node:4000
       - --datadir=/data
+      - --accept-terms-of-use
     networks:
       - core
 
-  eth2stat:
-    image: alethio/eth2stats-client:latest
-    depends_on:
-      - beacon-node
-    volumes:
-      - eth2stat-data:/data
-    command:
-      - run
-      - --eth2stats.node-name=__Bech__Prysm
-      - --data.folder=/data
-      - --eth2stats.addr=grpc.medalla.eth2stats.io:443
-      - --eth2stats.tls=true
-      - --beacon.type=prysm
-      - --beacon.addr=beacon-node:4000
-      - --beacon.metrics-addr=http://beacon-node:8080/metrics
-    networks:
-      - core
+  # eth2stat:
+  #   image: alethio/eth2stats-client:latest
+  #   depends_on:
+  #     - beacon-node
+  #   volumes:
+  #     - eth2stat-data:/data
+  #   command:
+  #     - run
+  #     - --eth2stats.node-name=__Bech__Prysm__EthCon1
+  #     - --data.folder=/data
+  #     - --eth2stats.addr=grpc.eth2stats.io:443
+  #     - --eth2stats.tls=true
+  #     - --beacon.type=prysm
+  #     - --beacon.addr=beacon-node:4000
+  #     - --beacon.metrics-addr=http://beacon-node:8080/metrics
+  #   networks:
+  #     - core
 
 volumes:
   eth-data:
