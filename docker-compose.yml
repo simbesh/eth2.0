@@ -33,7 +33,10 @@ services:
       - 13000:13000
       - 4000:4000
       - 8080:8080
+      - 3500:3500
     command:
+      - --grpc-gateway-host=0.0.0.0
+      - --grpc-gateway-corsdomain=http://0.0.0.0:7500,http://127.0.0.1:7500,http://localhost:7500,http://10.1.1.16:7500
       - --config-file=/config/beacon.yaml
       - --http-web3provider=/eth1/geth.ipc
       - --datadir=/data
@@ -46,19 +49,21 @@ services:
     depends_on:
       - beacon-node
     volumes:
-      - /home/simbesh/.prysm/validator:/wallet:ro
-      - /home/simbesh/.prysm/password:/password:ro
+      - /home/bech/.prysm/validator:/wallet:rw
+      - /home/bech/.prysm/password:/password:ro
       - validator-data:/data
     ports:
       - 8081:8081
+      - 7500:7500
     command:
       - --monitoring-host=0.0.0.0
+      - --grpc-gateway-host=0.0.0.0
       - --beacon-rpc-provider=beacon-node:4000
       - --wallet-dir=/wallet
       - --wallet-password-file=/password/validator-pw.txt
       - --datadir=/data
       - --accept-terms-of-use
-#      - --web
+      - --web
     networks:
       - core
 
